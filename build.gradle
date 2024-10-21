@@ -3,13 +3,12 @@ plugins {
     id 'org.springframework.boot' version '3.3.3'
     id 'io.spring.dependency-management' version '1.1.6'
 }
-ext {
-    group = 'com.sboard'
-    version = '0.0.4-SNAPSHOT'
-}
+
+group = 'com.sboard'
+version = '0.0.6-SNAPSHOT'
 
 processResources {
-    filesMatching('**/application.yml'){
+    filesMatching('**/application.yml') {
         expand(project.properties)
     }
 }
@@ -36,6 +35,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.mysql:mysql-connector-j'
@@ -45,23 +45,16 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-    //Mail
-    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-mail
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '3.3.3'
 
-    //thymeleaf(for email service)
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-    implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
-
-    // https://mvnrepository.com/artifact/com.google.code.gson/gson
-    implementation group: 'com.google.code.gson', name: 'gson', version: '2.11.0'
-
-    implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.12.6'
-    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.12.6'
-    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.12.6'
+    // https://mvnrepository.com/artifact/org.thymeleaf.extras/thymeleaf-extras-springsecurity6
+    implementation group: 'org.thymeleaf.extras', name: 'thymeleaf-extras-springsecurity6', version: '3.1.2.RELEASE'
 
     // https://mvnrepository.com/artifact/org.modelmapper/modelmapper
     implementation group: 'org.modelmapper', name: 'modelmapper', version: '3.2.1'
 
+    // https://mvnrepository.com/artifact/com.querydsl/querydsl-jpa
     implementation 'com.querydsl:querydsl-jpa:5.1.0:jakarta'
     annotationProcessor "com.querydsl:querydsl-apt:5.1.0:jakarta"
     annotationProcessor "jakarta.annotation:jakarta.annotation-api"
@@ -74,16 +67,17 @@ tasks.named('test') {
 }
 
 // QueryDSL 경로설정 및 환경설정
-def queryDSLDir = "src/main/generated"
+// 프로젝트가 실행 상태가 되어야 Q도메인 클래스 생성
+def queryDslDir = "src/main/generated"
 
 sourceSets {
-    main.java.srcDirs queryDSLDir
+    main.java.srcDirs queryDslDir
 }
 
 tasks.withType(JavaCompile) {
-    options.generatedSourceOutputDirectory = file(queryDSLDir)
+    options.generatedSourceOutputDirectory = file(queryDslDir)
 }
 
 clean {
-    delete file(queryDSLDir)
+    delete file(queryDslDir)
 }

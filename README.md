@@ -1,1 +1,1 @@
-# sboard
+# sboard-project

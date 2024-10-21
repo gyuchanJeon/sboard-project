@@ -1,35 +1,32 @@
 package com.sboard.entity;
 
+
 import com.sboard.dto.TermsDTO;
+import com.sboard.dto.UserDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
 @Getter
-@Entity
+@Setter
 @ToString
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
+@Entity
 @Table(name = "terms")
 public class Terms {
 
     @Id
-    private int tid;
-
-    @Lob
-    @Column(length = 20000)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int seq;
     private String terms;
-
-    @Lob
-    @Column(length = 20000)
     private String privacy;
 
-    public TermsDTO toDTO() {
+    public TermsDTO toDTO(){
         return TermsDTO.builder()
-                .tid(tid)
+                .seq(seq)
                 .terms(terms)
                 .privacy(privacy)
                 .build();
     }
-
 }

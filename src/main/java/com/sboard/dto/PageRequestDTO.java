@@ -8,9 +8,9 @@ import org.springframework.data.domain.Sort;
 @Getter
 @Setter
 @ToString
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class PageRequestDTO {
 
     @Builder.Default
@@ -27,6 +27,7 @@ public class PageRequestDTO {
 
     private String type;
     private String keyword;
+
 
     public Pageable getPageable(String sort) {
         return PageRequest.of(this.pg - 1, this.size, Sort.by(sort).descending());

@@ -3,19 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>로그인</title>
-    <link rel="stylesheet" href="../css/style.css"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
 </head>
-<script>
-    const urlParams = new URL(location.href).searchParams;
-    const success = urlParams.get('success');
-    if (success==="100") {
-        alert("로그인에 실패하였습니다.")
-    } else if (success==="101") {
-        alert("성공적으로 로그아웃 되었습니다.")
-    } else if (success==="102") {
-        alert("회원가입 완료되었습니다. 다시 로그인 해주세요.")
-    }
-</script>
 <body>
     <div id="wrapper">
         <header>
@@ -23,18 +12,23 @@
         </header>
         <main id="user">
             <section class="login">
-                <form action="/sboard/user/login" method="post">
+                <form method="post">
                     <table border="0">
                         <tr>
-                            <td><img src="../img/login_ico_id.png" alt="아이디"/></td>
+                            <td><img th:src="@{/img/login_ico_id.png}" alt="아이디"/></td>
                             <td><input type="text" name="uid" placeholder="아이디 입력"/></td>
                         </tr>
                         <tr>
-                            <td><img src="../img/login_ico_pw.png" alt="비밀번호"/></td>
+                            <td><img th:src="@{/img/login_ico_pw.png}" alt="비밀번호"/></td>
                             <td><input type="password" name="pass" placeholder="비밀번호 입력"/></td>
                         </tr>
                     </table>
                     <input type="submit" value="로그인" class="btnLogin"/>
+
+                    <a th:href="@{/oauth2/authorization/google}">
+                        <img th:src="@{/img/web_light_rd_SI@1x.png}" alt="google">
+                    </a>
+
                 </form>
                 <div>
                     <h3>회원 로그인 안내</h3>
@@ -44,14 +38,14 @@
                     <div style="text-align: right;">
                         <a href="./findId.html">아이디 |</a>
                         <a href="./findPw.html">비밀번호찾기 |</a>
-                        <a href="/sboard/user/terms">회원가입</a>
+                        <a th:href="@{/user/terms}">회원가입</a>
                     </div>                    
                 </div>
             </section>
         </main>
         <footer>
             <p>
-                <span class="copyright">Copyrightⓒ 전규찬(개발에반하다.)</span>
+                <span class="copyright">Copyrightⓒ 김철학(개발에반하다.)</span>
                 <span class="version">[[${appInfo.appName}]] ver.[[${appInfo.appVersion}]]</span>
             </p>
         </footer>

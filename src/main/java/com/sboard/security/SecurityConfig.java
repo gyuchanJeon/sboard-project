@@ -1,5 +1,7 @@
 package com.sboard.security;
 
+import com.sboard.oauth2.MyOauth2UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -9,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+@RequiredArgsConstructor
 @Configuration
 public class SecurityConfig {
 
@@ -27,29 +30,37 @@ public class SecurityConfig {
          - ROLE_ 접두어를 안붙이면 hasAuthority(), hasAnyAuthority()로 권한 설정
          - 존재하지 않은 요청주소에 대해서 시큐리티는 로그인페이지로 기본 redirect 수행하기 때문에 마지막에 anyRequest().permitAll() 권한 설정
     */
+
+    private final MyOauth2UserService myOauth2UserService;
+
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
 
         // 로그인 설정
         http.formLogin(login -> login
-                .loginPage("/user/login")
-                .defaultSuccessUrl("/article/list")
-                .failureUrl("/user/login?success=100")
-                .usernameParameter("uid")
-                .passwordParameter("pass"));
+                                    .loginPage("/user/login")
+                                    .defaultSuccessUrl("/")
+                                    .failureUrl("/user/login?success=100")
+                                    .usernameParameter("uid")
+                                    .passwordParameter("pass"));
 
         // 로그아웃 설정
         http.logout(logout -> logout
-                .invalidateHttpSession(true)
-                .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
-                .logoutSuccessUrl("/user/login?success=101"));
+                                .invalidateHttpSession(true)
+                                .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
+                                .logoutSuccessUrl("/user/login?success=101"));
+
+        // OAuth2 설정
+        http.oauth2Login(login -> login
+                                    .loginPage("/user/login")
+                                    .userInfoEndpoint(endpoint -> endpoint.userService(myOauth2UserService)));
+
+
         // 인가 설정
         http.authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/").permitAll()
-                .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/manager/**").hasAnyRole("ADMIN", "MANAGER")
-                .requestMatchers("/staff/**").hasAnyRole("ADMIN", "MANAGER", "STAFF")
-                .anyRequest().permitAll());
+                                                    .requestMatchers("/article/**").authenticated()
+                                                    .requestMatchers("/user/**").permitAll()
+                                                    .anyRequest().permitAll());
 
         // 기타 보안 설정
         http.csrf(AbstractHttpConfigurer::disable);

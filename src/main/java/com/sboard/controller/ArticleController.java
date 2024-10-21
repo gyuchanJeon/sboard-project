@@ -1,10 +1,11 @@
 package com.sboard.controller;
 
+import com.sboard.config.AppInfo;
+import com.sboard.dto.ArticleDTO;
+import com.sboard.dto.FileDTO;
 import com.sboard.dto.PageRequestDTO;
 import com.sboard.dto.PageResponseDTO;
 import com.sboard.service.ArticleService;
-import com.sboard.dto.ArticleDTO;
-import com.sboard.dto.FileDTO;
 import com.sboard.service.FileService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -13,48 +14,37 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
 @Log4j2
-@RequestMapping("/article")
-@Controller
 @RequiredArgsConstructor
+@Controller
 public class ArticleController {
 
     private final ArticleService articleService;
     private final FileService fileService;
 
-    @GetMapping("/list")
-    public String list(PageRequestDTO pageRequestDTO, Model model) {
 
-        PageResponseDTO pageResponseDTO = articleService.selectAllArticles(pageRequestDTO);
+    @GetMapping("/article/list")
+    public String list(Model model, PageRequestDTO pageRequestDTO) {
+
+        PageResponseDTO pageResponseDTO = articleService.selectArticleAll(pageRequestDTO);
         model.addAttribute(pageResponseDTO);
-
 
         return "/article/list";
     }
 
-    @GetMapping("/view")
-    public String view() {
-        return "/article/view";
-    }
+    @GetMapping("/article/write")
+    public String write(){
 
-    @GetMapping("/modify")
-    public String modify() {
-        return "/article/modify";
-    }
-
-    @GetMapping("/write")
-    public String write(Model model) {
         return "/article/write";
     }
 
-    @PostMapping("/write")
-    public String write(ArticleDTO articleDTO, HttpServletRequest request) {
-
-        String regip = request.getRemoteAddr();
+    @PostMapping("/article/write")
+    public String write(ArticleDTO articleDTO, HttpServletRequest req){
+        String regip = req.getRemoteAddr();
         articleDTO.setRegip(regip);
         log.info(articleDTO);
 
@@ -66,13 +56,35 @@ public class ArticleController {
         int ano = articleService.insertArticle(articleDTO);
 
         // 파일 저장
-        for (FileDTO fileDTO : uploadedFiles) {
+        for(FileDTO fileDTO : uploadedFiles){
             fileDTO.setAno(ano);
             fileService.insertFile(fileDTO);
         }
 
-
         return "redirect:/article/list";
     }
 
+
+    @GetMapping("/article/view")
+    public String view(int no, Model model){
+        log.info(no);
+        ArticleDTO articleDTO = articleService.selectArticle(no);
+
+
+
+        log.info(articleDTO);
+
+
+        model.addAttribute(articleDTO);
+
+        return "/article/view";
+    }
+
+
+
+
+    @GetMapping("/article/modify")
+    public String modify(){
+        return "/article/modify";
+    }
 }

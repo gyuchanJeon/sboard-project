@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Value;
 @Getter
 @Setter
 @ToString
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class AppInfo {
 
     @Value("${spring.application.name}")

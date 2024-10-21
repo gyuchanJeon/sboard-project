@@ -1,17 +1,20 @@
 package com.sboard.dto;
 
+
+import jakarta.persistence.*;
 import lombok.*;
 
 @Getter
 @Setter
 @ToString
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class TermsDTO {
 
-    private int tid;
+    private int seq;
     private String terms;
     private String privacy;
+
 
 }

@@ -1,19 +1,21 @@
 package com.sboard.entity;
 
 import com.sboard.dto.UserDTO;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.*;
-import org.hibernate.annotations.CurrentTimestamp;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
 @Getter
+@Setter
 @ToString
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "user")
 public class User {
@@ -30,12 +32,11 @@ public class User {
     private String addr1;
     private String addr2;
     private String regip;
-
-    @CurrentTimestamp
+    @CreationTimestamp
     private LocalDateTime regDate;
     private LocalDateTime leaveDate;
 
-    public UserDTO toDTO() {
+    public UserDTO toDTO(){
         return UserDTO.builder()
                 .uid(uid)
                 .pass(pass)
@@ -48,8 +49,8 @@ public class User {
                 .addr1(addr1)
                 .addr2(addr2)
                 .regip(regip)
-                .regDate(regDate)
-                .leaveDate(leaveDate)
+                .regDate(regDate.toString())
+                .leaveDate(leaveDate.toString())
                 .build();
     }
 }

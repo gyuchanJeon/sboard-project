@@ -21,9 +21,9 @@ public class QTerms extends EntityPathBase<Terms> {
 
     public final StringPath privacy = createString("privacy");
 
-    public final StringPath terms = createString("terms");
+    public final NumberPath<Integer> seq = createNumber("seq", Integer.class);
 
-    public final NumberPath<Integer> tid = createNumber("tid", Integer.class);
+    public final StringPath terms = createString("terms");
 
     public QTerms(String variable) {
         super(Terms.class, forVariable(variable));

@@ -1,69 +1,87 @@
 logging:
-  file:
-    name: /logs/sboard.log
-  level:
-    jdbc:
-      resultsettable: info
-      sqlonly: info
-    org:
-      hibernate:
-        orm:
-          jdbc:
-            bind: trace
-        sql: debug
-    root: info
-    sqltiming: info
+    file:
+        name: /logs/sboard.log
+    level:
+        jdbc:
+            resultsettable: debug
+            sqlonly: debug
+            sqltiming: debug
+        org:
+            hibernate:
+                orm:
+                    jdbc:
+                        bind: trace
+                sql: debug
+        root: info
 server:
-  port: 8080
-  servlet:
-    context-path: /sboard
+    port: 8080
+    servlet:
+        context-path: /sboard
+
 spring:
-  application:
-    name: sboard
-    version: ${ext.version}
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://13.124.215.184:3306/jboard
-    username: jboard
-    password: "!Q2w3e4r"
-  devtools:
-    livereload:
-      enabled: true
-  jpa:
-    database: mysql
-    hibernate:
-      ddl-auto: update
-      naming:
-        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-    properties:
-      hibernate:
-        format_sql: true
-        show_sql: true
+    application:
+        name: sboard
+        version: ${version}
+    datasource:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/jboard
+        username: root
+        password: 1234
+    devtools:
+        livereload:
+            enabled: true
+    jpa:
+        database: mysql
+        hibernate:
+            ddl-auto: update
+            naming:
+                physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+        properties:
+            hibernate:
+                format_sql: true
+                show_sql: true
+    mail:
+        host: smtp.gmail.com
+        port: 587
+        username: pkl1004125@gmail.com
+        password: xpln havd wzlg +svbd # google 앱 비밀번호
+        properties:
+            mail:
+                smtp:
+                    auth: true
+                    timeout: 5000
+                    starttls:
+                        enable: true
 
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: ian810900@gmail.com
-    password: vfft ricj elqd idom
-    properties:
-      mail:
-        transport.protocol: smtp
-        debug: false
-        smtp:
-          auth: true
-          connection timeout: 5000
-          timeout: 5000
-          write timeout: 5000
-          starttls:
-            enable: true
-          pool: true
-          size: 5
+    thymeleaf:
+        prefix: classpath:/templates
 
-  thymeleaf:
-    prefix: classpath:/templates
+    servlet:
+        multipart:
+            location: uploads/
+            max-file-size: 10MB
 
-  servlet:
-    multipart:
-      location: uploads/
-      max-file-size: 10MB
+    security:
+        oauth2:
+            client:
+                provider:
+                    google:
+                        authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+                        token-uri: https://accounts.google.com/o/oauth2/token
+                        user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+                        user-name-attribute: name
+                registration:
+                    google:
+                        client-id: 60431749569-m5e000jb59uqkinlqo5udh3m54d5mlgk.apps.googleusercontent.com
+                        client-secret: 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
+                        redirect-uri: http://ec2-15-164-93-254.ap-northeast-2.compute.amazonaws.com:8080/login/oauth2/code/google
+                        scope:
+                          - email
+                          - profile
+
+
+
+
+
+
 

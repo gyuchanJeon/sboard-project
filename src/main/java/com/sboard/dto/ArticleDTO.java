@@ -3,15 +3,14 @@ package com.sboard.dto;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
 @Setter
 @ToString
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class ArticleDTO {
 
     private int no;
@@ -33,13 +32,18 @@ public class ArticleDTO {
 
     private String writer;
     private String regip;
-    private LocalDateTime rdate;
+    private String rdate;
 
-    // 추가 필드
+    // 추가필드
     private String nick;
 
+
+    private List<FileDTO> fileList;
+
+    private List<CommentDTO> commentList;
+
     /*
-        Entity 변환 메서드 대신 ModelMapper 사용
-     */
+    Entity 변환 메서드 대신 ModelMapper 사용
+    */
 
 }

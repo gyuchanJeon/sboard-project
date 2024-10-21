@@ -1,6 +1,6 @@
 package com.sboard.config;
 
-import com.sboard.intercepter.AppInfoInterceptor;
+import com.sboard.intercepter.AppInfoIntercepter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -14,6 +14,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new AppInfoInterceptor(appInfo));
+        registry.addInterceptor(new AppInfoIntercepter(appInfo));
     }
 }

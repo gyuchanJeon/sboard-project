@@ -1,5 +1,6 @@
 package com.sboard.repository.impl;
 
+import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -21,15 +22,15 @@ import java.util.List;
 @Repository
 public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
 
-
     private final JPAQueryFactory queryFactory;
+
     private QArticle qArticle = QArticle.article;
     private QUser qUser = QUser.user;
 
     @Override
     public Page<Tuple> selectArticleAllForList(PageRequestDTO pageRequestDTO, Pageable pageable) {
 
-        List<Tuple> content = queryFactory
+        List<Tuple> content  = queryFactory
                                         .select(qArticle, qUser.nick)
                                         .from(qArticle)
                                         .join(qUser)
@@ -38,14 +39,16 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
                                         .limit(pageable.getPageSize())
                                         .orderBy(qArticle.no.desc())
                                         .fetch();
-        
+
         log.info("content : " + content);
 
         long total = queryFactory
-                .select(qArticle.count())
-                .from(qArticle)
-                .fetchOne();
-        
+                        .select(qArticle.count())
+                        .from(qArticle)
+                        .fetchOne();
+
+        log.info("total : " + total);
+
         // 페이징 처리를 위해 page 객체 리턴
         return new PageImpl<Tuple>(content, pageable, total);
     }
@@ -59,49 +62,49 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
         // 검색 선택 조건에 따라 where 조건 표현식 생성
         BooleanExpression expression = null;
 
-        if (type.equals("title")) {
+        if(type.equals("title")){
             expression = qArticle.title.contains(keyword);
             log.info(expression);
 
-        } else if (type.equals("content")) {
+        }else if(type.equals("content")){
             expression = qArticle.content.contains(keyword);
             log.info(expression);
 
-        } else if (type.equals("title_content")) {
+        }else if(type.equals("title_content")){
+
             BooleanExpression titleExpression = qArticle.title.contains(keyword);
             BooleanExpression contentExpression = qArticle.content.contains(keyword);
 
             expression = titleExpression.or(contentExpression);
             log.info(expression);
 
-        } else if (type.equals("writer")) {
+        }else if(type.equals("writer")){
             expression = qUser.nick.contains(keyword);
             log.info(expression);
         }
 
-        List<Tuple> content = queryFactory
-                .select(qArticle, qUser.nick)
-                .from(qArticle)
-                .join(qUser)
-                .on(qArticle.writer.eq(qUser.uid))
-                .where(expression)
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .orderBy(qArticle.no.desc())
-                .fetch();
+        List<Tuple> content  = queryFactory
+                                .select(qArticle, qUser.nick)
+                                .from(qArticle)
+                                .join(qUser)
+                                .on(qArticle.writer.eq(qUser.uid))
+                                .where(expression)
+                                .offset(pageable.getOffset())
+                                .limit(pageable.getPageSize())
+                                .orderBy(qArticle.no.desc())
+                                .fetch();
 
         log.info("content : " + content);
 
         long total = queryFactory
-                .select(qArticle.count())
-                .from(qArticle)
-                .where(expression)
-                .join(qUser)
-                .on(qArticle.writer.eq(qUser.uid))
-                .fetchOne();
+                        .select(qArticle.count())
+                        .from(qArticle)
+                        .where(expression)
+                        .join(qUser)
+                        .on(qArticle.writer.eq(qUser.uid))
+                        .fetchOne();
 
         // 페이징 처리를 위해 page 객체 리턴
         return new PageImpl<Tuple>(content, pageable, total);
-
     }
 }
